@@ -15,8 +15,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path , include  # Thêm include 
+from catalog import views # Phải có dòng này để lấy hàm index
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', views.index, name='index'), # Dòng này sẽ thay thế trang tên lửa bằng trang của bạn
+    path('accounts/', include('django.contrib.auth.urls')) , # đường dẫn đăng nhập
 ]
