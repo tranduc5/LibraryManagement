@@ -17,9 +17,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path , include  # Thêm include 
 from catalog import views # Phải có dòng này để lấy hàm index
+# from . import views
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'), # Dòng này sẽ thay thế trang tên lửa bằng trang của bạn
     path('accounts/', include('django.contrib.auth.urls')) , # đường dẫn đăng nhập
+    path('blog/', include('blog.urls')),
+    path('', views.index, name='index'),
+    # Đường dẫn ví dụ: /catalog/book/1
+    path('book/<int:pk>', views.BookDetailView.as_view(), name='book-detail'),
+    path('book/<int:pk>/borrow/', views.borrow_book, name='borrow_book'),
+    path('loan/<int:pk>/return/', views.return_book, name='return-book'),
+    path('mybooks/' , views.LoanedBooksByUserListView.as_view() , name='my-borrowed'),
+    
 ]

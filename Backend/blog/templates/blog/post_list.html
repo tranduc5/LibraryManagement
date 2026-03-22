@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Thư viện - Tin tức</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;      /* Giới hạn chiều rộng trang */
+            margin: auto;           /* Căn giữa */
+        }
+        
+        /* Tạo kẻ gạch chân dưới mỗi bài viết */
+        .post {
+            border: 1px solid #ddd;
+            padding: 15px;   /* tránh chữ dính vào viền */
+            padding-bottom: 10px;
+            margin-bottom: 20px
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        h2 {
+            color: #2980b9;
+            margin-bottom: 5px;
+        }
+
+        small {
+            color: #7f8c8d
+        }
+    </style>
+</head>
+
+<body>
+    <h1> Tin tức thư viện</h1>
+    <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 30px; border-left: 5px solid #2980b9;">
+        <h3 style="margin-top: 0;">📊 Thống kê Thư viện</h3>
+        <p>Hiện tại chúng tôi đang có:</p>
+        <ul>
+            <li><strong>{{ num_books }}</strong> đầu sách quý giá.</li>
+            <li><strong>{{ num_authors }}</strong> tác giả nổi tiếng.</li>
+        </ul>
+        <p><a href="/catalog/" style="color: #2980b9;">Xem chi tiết danh mục sách →</a></p>
+    </div>
+    
+    <h2>📰 Tin tức mới nhất</h2>
+    <hr>
+    
+    <hr>
+    {% for post in posts %}    <!-- Tạo vòng lặp hiển thị mỗi khối cho mỗi bài viết -->
+    <div class="post">
+        <h2>{{ post.title}}</h2>      
+        <small>Ngày đăng: {{ post.date|date:"d/m/Y H:i"}}</small>
+        <p>{{ post.body|linebreaks }}</p>     <!-- linebreaks :  giữ cấu trúc câu -->
+    </div>
+
+    <!--Nếu trong database chưa có bài viết nào , đoạn code trong empty sẽ hiện ra -->
+   
+    {% empty %}
+      <p>Hiện tại chưa có thông báo nào .</p>
+    {% endfor %}
+
+    <p><a href="/admin/">Quay lại trang quản trị </a></p>
+
+</body>
+
+</html>

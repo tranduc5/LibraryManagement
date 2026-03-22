@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ book.title }} - Chi tiết sách</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+{% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="submit" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<body class="container mt-5">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Trang chủ</a></li>
+        <li class="breadcrumb-item active">{{ book.title }}</li>
+      </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="text-primary">{{ book.title }}</h1>
+            <p><strong>Tác giả:</strong> {{ book.author }}</p>
+            <p><strong>Thể loại:</strong> {% for g in book.genre.all %} {{ g.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+            <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+            
+            <p><strong>Trạng thái:</strong> 
+                {% if book.is_available %}
+                    <span class="badge bg-success">Sẵn sàng</span>
+                {% else %}
+                    <span class="badge bg-danger">Đã có người mượn</span>
+                {% endif %}
+            </p>
+
+            <hr>
+            <h3>Mô tả nội dung:</h3>
+            <p class="lead">{{ book.summary|default:"Chưa có mô tả cho cuốn sách này." }}</p>
+        </div>
+    </div>
+    
+    <hr>
+{% if user.is_authenticated %}
+    {% if book.is_available %}
+        <form action="{% url 'borrow_book' book.pk %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-warning btn-lg">📖 Mượn cuốn sách này</button>
+        </form>
+    {% else %}
+        {% if user_loan %}
+            <div class="alert alert-info d-flex align-items-center justify-content-between">
+                <div>
+                    <h5 class="mb-1">Bạn đang mượn cuốn sách này!</h5>
+                    <p class="mb-0">Hạn trả dự kiến: <strong>{{ user_loan.due_date }}</strong></p>
+                </div>
+                <form action="{% url 'return-book' user_loan.pk %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success btn-lg">✅ Trả sách ngay</button>
+                </form>
+            </div>
+        {% else %}
+            <div class="alert alert-secondary">
+                <h5>Sách này đã có người mượn.</h5>
+                <button class="btn btn-secondary btn-lg" disabled>❌ Không thể mượn</button>
+            </div>
+        {% endif %}
+    {% endif %}
+{% else %}
+    <div class="alert alert-warning">
+        Vui lòng <a href="{% url 'login' %}?next={{request.path}}">đăng nhập</a> để mượn sách.
+    </div>
+{% endif %}
+</body>
+</html>

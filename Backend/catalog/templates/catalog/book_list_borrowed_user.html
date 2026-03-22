@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sách của tôi</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="container mt-5">
+    <h2 class="text-primary">📚 Danh sách sách bạn đang mượn</h2>
+    <hr>
+
+    <table class="table table-hover mt-4">
+        <thead class="table-dark">
+            <tr>
+                <th>Tên sách</th>
+                <th>Ngày mượn</th>
+                <th>Hạn trả dự kiến</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for loan in loan_list %}
+            <tr>
+                <td><strong>{{ loan.book.title }}</strong></td>
+                <td>{{ loan.loan_date }}</td>
+                <td class="{% if loan.due_date < date.today %}text-danger font-weight-bold{% endif %}">
+                    {{ loan.due_date }}
+                </td>
+                <td>
+                    <form action="{% url 'return-book' loan.pk %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-success">Trả sách ngay</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center text-muted">Bạn hiện không mượn cuốn sách nào.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="mt-4">
+        <a href="{% url 'index' %}" class="btn btn-secondary"> Quay lại kho sách</a>
+    </div>
+</body>
+</html>

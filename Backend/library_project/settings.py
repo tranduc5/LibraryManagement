@@ -31,13 +31,15 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'catalog',
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'catalog',
+    'blog',
 ]
 
 MIDDLEWARE = [
@@ -122,3 +124,7 @@ STATIC_URL = 'static/'
 LOGIN_REDIRECT_URL = '/'
 # Nếu chưa đăng nhập mà truy cập trang yêu cầu quyền, sẽ đẩy về đây
 LOGIN_URL = '/accounts/login/'
+
+
+#  Khi logout xong tự động chuyển hướng về trang login 
+LOGOUT_REDIRECT_URL = 'login'
