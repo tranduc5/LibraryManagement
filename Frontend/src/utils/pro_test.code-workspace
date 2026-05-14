@@ -1,0 +1,24 @@
+{
+	"folders": [
+		{
+			"path": "../../../../../../CNPM/pro_test"
+		},
+		{
+			"path": "../../../../../../../CODE/Dorm_Management"
+		},
+		{
+			"path": "../../../../../LibraryManagement"
+		},
+		{
+			"path": "../../../.."
+		}
+	],
+	"settings": {
+		
+		"liveServer.settings.root": "/",
+		"liveServer.settings.multiRootWorkspaceName": "B3",
+		
+		
+		
+	}
+}
