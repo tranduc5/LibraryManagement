@@ -1,50 +1,69 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import SideBar from "./components/SideBar/SideBar.jsx";
-import NavBar from "./components/NavBar/NavBar.jsx";
-import Insight from "./components/Insight/Insight.jsx";
-import BookList from "./components/BookList/BookList.jsx";
-import LoginPage from "./pages/Login/LoginPage.jsx";
+import LoginPage from './pages/Login/LoginPage';
+import Dashboard from './pages/Dashboard/Dashboard'; 
+import StudentDashboard from './pages/StudentDashboard/StudentDashboard';
 
-// 1. Tạo một Component riêng cho Layout Dashboard để code gọn hơn
-const AdminLayout = () => {
-  // Logic kiểm tra: Nếu chưa có Token thì đá về trang Login
-  const isAuthenticated = !!localStorage.getItem('access_token');
-  
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
+const ProtectedRoute = ({ children, requireAdmin }) => {
+  const token = localStorage.getItem('access_token');
+  const isStaff = localStorage.getItem('is_staff'); 
+
+  // Nếu không có token mới ép về Login
+  if (!token) {
+    return <Navigate to="/login" replace />;
   }
 
-  return (
-    <div className="d-flex">
-      <SideBar />
-      <div className="flex-grow-1 bg-light overflow-hidden">
-        <NavBar />
-        <div className="container-fluid p-4">
-          <h3 className="mb-4 fw-bold">Dashboard Quản Lý</h3>
-          <Insight />
-          <BookList />
-        </div>
-      </div>
-    </div>
-  );
+  if (requireAdmin && isStaff !== 'true') {
+    return <Navigate to="/student" replace />;
+  }
+
+  if (!requireAdmin && isStaff === 'true') {
+    return <Navigate to="/admin" replace />;
+  }
+
+  return children;
 };
 
-function App() {
+const App = () => {
   return (
     <Router>
       <Routes>
-        {/* Đường dẫn cho trang Login: Không có Sidebar/Navbar */}
         <Route path="/login" element={<LoginPage />} />
 
-        {/* Đường dẫn cho trang Admin: Có đầy đủ Sidebar/Navbar */}
-        <Route path="/" element={<AdminLayout />} />
+        <Route 
+          path="/admin" 
+          element = {
+            <ProtectedRoute requireAdmin={true}>
+              <Dashboard />
+            </ProtectedRoute>
+          } 
+        />
 
-        {/* Nếu vào đường dẫn linh tinh, tự động về trang chủ */}
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route 
+          path="/student" 
+          element = {
+            <ProtectedRoute requireAdmin={false}>
+              <StudentDashboard />
+            </ProtectedRoute>
+          } 
+        />
+
+        <Route 
+          path="*" 
+          element = {
+            <Navigate 
+              to={
+                localStorage.getItem('access_token') 
+                  ? (localStorage.getItem('is_staff') === 'true' ? '/admin' : '/student')
+                  : '/login'
+              } 
+              replace 
+            />
+          } 
+        />
       </Routes>
     </Router>
   );
-}
+};
 
 export default App;

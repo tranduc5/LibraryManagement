@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import UserProfile
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer 
 
 # 1. Serializer cho Profile (Phải định nghĩa TRƯỚC để lồng vào User)
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -29,3 +30,18 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         # Lưu ý: Profile sẽ được tạo tự động nhờ signals.py chúng ta đã viết
         return user
+    
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        # Lấy dữ liệu cặp token access và refresh gốc
+        data = super().validate(attrs)
+        
+        # self.user đại diện cho tài khoản đang thực hiện đăng nhập thành công
+        data['username'] = self.user.username
+        data['is_staff'] = self.user.is_staff  # Trả về True/False cho React nhận diện quyền
+        
+        # Nếu Đức muốn trả thêm cả trường 'role' (admin/student) từ UserProfile sang React:
+        if hasattr(self.user, 'profile') and self.user.profile:
+            data['role'] = self.user.profile.role
+            
+        return data

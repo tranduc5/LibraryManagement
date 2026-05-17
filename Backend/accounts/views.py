@@ -1,17 +1,22 @@
-# Lấy thông tin đăng nhập hiện lên NavBar
-
 from rest_framework import viewsets, permissions
-from .serializers import UserSerializer
+from .serializers import UserSerializer, CustomTokenObtainPairSerializer # Import thêm class custom mới
 from django.contrib.auth.models import User
+from rest_framework_simplejwt.views import TokenObtainPairView # Import view gốc của JWT
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    # permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        # Lấy tất cả người dùng nhưng loại trừ những tài khoản có is_staff=True hoặc username='admin'
+        return User.objects.exclude(is_staff=True).exclude(username='admin')
+    
     def get_permissions(self):
-        # Nếu là hành động 'create' (Đăng ký tài khoản mới)
         if self.action == 'create':
-            return [permissions.AllowAny()] # Cho phép tất cả mọi người
-        
-        # Các hành động khác (xem danh sách, sửa, xóa) vẫn cần đăng nhập
+            return [permissions.AllowAny()]
         return [permissions.IsAuthenticated()]
+
+# View xử lý đăng nhập tùy biến
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+    permission_classes = [permissions.AllowAny]

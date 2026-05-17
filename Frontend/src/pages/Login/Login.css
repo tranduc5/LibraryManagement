@@ -1,0 +1,34 @@
+.login-image-side {
+    background-image: url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100%;
+    position: relative;
+}
+
+/* Lớp phủ mờ chuyển màu gradient từ dưới lên giúp text nổi bật */
+.login-image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.2) 60%, rgba(15, 23, 42, 0) 100%);
+}
+
+.tracking-wide {
+    letter-spacing: 0.5px;
+}
+
+/* Tinh chỉnh input mượt hơn */
+.form-control-lg {
+    font-size: 1rem;
+    border-radius: 10px;
+    transition: all 0.2s ease-in-out;
+}
+
+.form-control-lg:focus {
+    background-color: #fff !important;
+    border: 1px solid #3b82f6 !important;
+}
